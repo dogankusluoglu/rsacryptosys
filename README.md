@@ -1,5 +1,5 @@
 # RSAcryptosys
-A basic Java program that generates Public and Private keys for RSA encryption/decryption.
+A basic small scale Java program that generates Public and Private keys for RSA encryption/decryption. Developed with the intent to test mathematical algorithms involved in RSA encryption/decryption such as the Extended Euclidean Algorithm and a square left to right multiply algorithm.
 
 ## Compilation
 Simply compile using `javac RSAystem.java`
