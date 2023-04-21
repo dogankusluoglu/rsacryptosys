@@ -1,10 +1,36 @@
+
+/**
+* The RSASystem program provides functionality to generate public and private keys for 
+*   the RSA encryption scheme.
+* 
+* The program contains a generateKeys() function that takes two prime numbers p and q,
+*   as well as an integer e, and calculates the public and private keys for the RSA 
+*   encryption scheme. The public key consists of the modulus n and the encryption 
+*   exponent e, while the private key consists of the modulus n and the decryption 
+*   exponent d.
+
+* The program uses various mathematical operations, such as prime factorization, 
+*   Euler's totient function, and the Extended Euclidean Algorithm, to calculate 
+*   the keys. The program also includes utility functions to calculate 
+*   prime factorization and modular inverse.
+*
+* @author  Dogan Kusluoglu
+* @version 1.0
+* @since   2023-04-20 
+*
+* @see <a href="https://en.wikipedia.org/wiki/RSA_(cryptosystem)">RSA Cryptosystem</a>
+* @see <a href="https://en.wikipedia.org/wiki/Prime_factorization">Prime Factorization</a>
+* @see <a href="https://en.wikipedia.org/wiki/Euler%27s_totient_function">Euler's Totient Function</a>
+* @see <a href="https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm">Extended Euclidean Algorithm</a>
+*/
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class RSASystem {
     public static void main(String[] args) {
 
-        int n[] = generateKeys(61,67,17);
+        int n[] = generateKeys(61, 67, 17);
 
         for (int i = 0; i < 3; i++) {
             System.out.println("Key: " + n[i]);
@@ -12,7 +38,23 @@ public class RSASystem {
 
     }
 
-    // Returns null on invalid params
+    /**
+     * Generates an array of RSA public and private keys for the given prime numbers
+     * p and q and a number e relatively prime to (p-1)*(q-1).
+     * 
+     * The returned integer array has the following form: {n, e, d} where n is the
+     * product of p and q, e is the public exponent, and d is the private exponent.
+     * 
+     * Returns null if the input parameters are invalid.
+     * 
+     * @param p a prime number to be used in key generation
+     * @param q a prime number to be used in key generation
+     * @param e a number relatively prime to (p-1)*(q-1) to be used as the public
+     *          exponent
+     * @return an array of integers containing the public and private keys in the
+     *         form of {n, e, d} at index 0, 1, and 2, respectively, or null if
+     *         invalid parameters are given.
+     */
     public static int[] generateKeys(int p, int q, int e) {
 
         int n, eulerN, d;
@@ -32,7 +74,7 @@ public class RSASystem {
             if (n % integer == 0) {
                 System.out.println("n and e are not relatively prime, choose different values");
                 return null;
-            } 
+            }
         }
 
         eulerN = getEulerTotient(n, primes);
@@ -41,20 +83,31 @@ public class RSASystem {
             if (eulerN % integer == 0) {
                 System.out.println("phi(n) and e are not relatively prime, choose different values");
                 return null;
-            } 
+            }
         }
-        
+
         d = getModularInverse(eulerN, e, n);
 
-        int keys[] = {n, e, d};
+        int keys[] = { n, e, d };
         return keys;
     }
 
-    /* Naive process checking if arg is prime */
+    /**
+     * Naive calculation that checks whether the given integer e is a prime number
+     * or not.
+     * A prime number is a positive integer greater than 1 that has no positive
+     * integer divisors other than 1 and itself.
+     * 
+     * @param e the integer to be checked for primality
+     * @return true if the integer is a prime number, false otherwise
+     */
     public static boolean isPrime(int e) {
-        if (e < 2) return false;
-        if (e == 2) return true;
-        if (e % 2 == 0) return false;
+        if (e < 2)
+            return false;
+        if (e == 2)
+            return true;
+        if (e % 2 == 0)
+            return false;
 
         int square = (int) Math.sqrt(e);
 
@@ -67,6 +120,17 @@ public class RSASystem {
         return true;
     }
 
+    /**
+     * Calculates the Euler totient function of the given integer n, using the prime
+     * factors provided in the factorsList.
+     * The Euler totient function, also known as Euler's phi function, is defined as
+     * the number of positive integers that are relatively prime to n.
+     * 
+     * @param n           the modulus for which the Euler totient function needs to
+     *                    be calculated
+     * @param factorsList a list of prime factors of n
+     * @return an integer representing the value of Euler totient function of n
+     */
     public static int getEulerTotient(int n, List<Integer> factorsList) {
         int totient = 1;
 
@@ -75,10 +139,10 @@ public class RSASystem {
             totient = factorsList.get(0) - 1;
             return totient;
         }
-        int counter = 1; 
+        int counter = 1;
 
         for (int i = 0; i < factorsList.size() - 1; i++) {
-            int curFact = factorsList.get(i), nextFact = factorsList.get(i+1); 
+            int curFact = factorsList.get(i), nextFact = factorsList.get(i + 1);
 
             if (curFact == nextFact) {
                 counter++;
@@ -93,9 +157,9 @@ public class RSASystem {
             }
         }
 
-        /* 
+        /*
          * Unhandled cases from for loop:
-         * -- If 2nd last value is the same as the last value 
+         * -- If 2nd last value is the same as the last value
          * -- If last value is different to second last value
          */
         int size = factorsList.size();
@@ -106,10 +170,21 @@ public class RSASystem {
         } else {
             totient = totient * (factorsList.get(size - 1) - 1);
         }
-    
+
         return totient;
     }
 
+    /**
+     * Calculates the prime factorization of the given positive integer n.
+     * Prime factorization is the process of finding the prime factors of a number,
+     * which are the prime numbers that can divide the number exactly without
+     * leaving a remainder.
+     * 
+     * @param n the positive integer for which the prime factorization needs to be
+     *          calculated
+     * @return a List of integers containing the prime factors of n in ascending
+     *         order
+     */
     public static List<Integer> getPrimeFactorisation(int n) {
         // Prime factorisation
         List<Integer> factorsList = new ArrayList<Integer>();
@@ -118,22 +193,38 @@ public class RSASystem {
 
         while (n % 2 == 0) {
             factorsList.add(2);
-            n = n/2;
+            n = n / 2;
         }
 
-        for (int i = 3; i < square; i+=2) {
+        for (int i = 3; i < square; i += 2) {
             while (n % i == 0) {
                 factorsList.add(i);
-                n = n/i;
+                n = n / i;
             }
         }
 
-        if (n > 2) factorsList.add(n);
+        if (n > 2)
+            factorsList.add(n);
 
         return factorsList;
     }
 
-    // Calculates the modular inverse using the Extended Euclidean Algorithm
+    /**
+     * Calculates the modular inverse of r1 modulo n using the Extended Euclidean
+     * Algorithm.
+     * The Extended Euclidean Algorithm is an algorithm that calculates the greatest
+     * common divisor (GCD) of two integers, as well as the coefficients x and y of
+     * the Bezout's identity, which is an equation of the form ax + by = gcd(a, b).
+     * In the case of calculating a modular inverse, the coefficients x and y can be
+     * used to find the inverse of r1 modulo n, if it exists.
+     * 
+     * @param r0 an integer representing the first number in the Bezout's identity
+     *           equation
+     * @param r1 an integer representing the second number in the Bezout's identity
+     *           equation, for which the inverse is to be calculated
+     * @param n  an integer representing the modulus
+     * @return an integer representing the modular inverse of r1 modulo n
+     */
     public static int getModularInverse(int r0, int r1, int n) {
         int x0 = 1, x1 = 0, y0 = 0, y1 = 1;
 
