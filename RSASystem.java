@@ -12,7 +12,7 @@
 * The program uses various mathematical operations, such as prime factorization, 
 *   Euler's totient function, and the Extended Euclidean Algorithm, to calculate 
 *   the keys. The program also includes utility functions to calculate 
-*   prime factorization and modular inverse.
+*   prime factorization, large exponents and modular inverse.
 *
 * @author  Dogan Kusluoglu
 * @version 1.0
@@ -30,12 +30,27 @@ import java.util.List;
 public class RSASystem {
     public static void main(String[] args) {
 
-        int n[] = generateKeys(61, 67, 17);
+        int keys[] = generateKeys(61, 67, 17);
 
-        for (int i = 0; i < 3; i++) {
-            System.out.println("Key: " + n[i]);
+        char msgAlph[] = ("MEET AT NINE").toCharArray();
+        int ciphers[] = new int[msgAlph.length];
+        char decrypted[] = new char[msgAlph.length];
+
+        System.out.println("Encrypted message:");
+        for (int i = 0; i < msgAlph.length; i++) {
+            int m = ((int) msgAlph[i]) - 64;
+            ciphers[i] = encrypt(m, keys[0], keys[1]);
+            System.out.print(ciphers[i] + " ");
         }
+        System.out.println();
 
+        System.out.println("Decrypted message:");
+        for (int i = 0; i < msgAlph.length; i++) {
+            int m = decrypt(ciphers[i], keys[0], keys[2]) + 64;
+            char c = (char) m;
+            decrypted[i] = c;
+            System.out.print(decrypted[i] + " ");
+        }
     }
 
     /**
@@ -249,5 +264,68 @@ public class RSASystem {
         }
 
         return y0;
+    }
+
+    /**
+     * 
+     * Encrypts a plaintext message using the RSA algorithm.
+     * 
+     * Given the plaintext message m, modulus n and public key e, this method
+     * calculates the ciphertext.
+     * 
+     * @param m the plaintext message to be encrypted
+     * @param n the modulus used in the RSA algorithm
+     * @param e the public key used in the RSA algorithm
+     * @return the encrypted ciphertext
+     */
+    public static int encrypt(int m, int n, int e) {
+        int c = squareLeftRightMultiply(m, e, n);
+
+        return c;
+    }
+
+    /**
+     * 
+     * Decrypts an encrypted message using the RSA algorithm.
+     * 
+     * Given the ciphertext c, modulus n and private key e, this method calculates
+     * the plaintext message.
+     * 
+     * @param c the ciphertext to be decrypted
+     * @param n the modulus used in the RSA algorithm
+     * @param e the private key used in the RSA algorithm
+     * @return the decrypted plaintext message
+     */
+    public static int decrypt(int c, int n, int e) {
+        int m = squareLeftRightMultiply(c, e, n);
+
+        return m;
+    }
+
+    /**
+     * 
+     * Computes the modular exponentiation using the square and multiply
+     * method.
+     * Given the base b, exponent e and modulus n, this method calculates (b^e) mod
+     * n.
+     * 
+     * @param b the base of the modular exponentiation
+     * @param e the exponent of the modular exponentiation
+     * @param n the modulus of the modular exponentiation
+     * @return the result of the modular exponentiation (b^e) mod n
+     */
+    public static int squareLeftRightMultiply(int b, int e, int n) {
+        int r = 1;
+        while (e != 0) {
+            if (e % 2 == 0) {
+                e = e / 2;
+                b = (int) Math.pow(b, 2) % n;
+            } else {
+                e = (e - 1) / 2;
+                r = (r * b) % n;
+                b = (int) Math.pow(b, 2) % n;
+            }
+        }
+        return r;
     }
 }
