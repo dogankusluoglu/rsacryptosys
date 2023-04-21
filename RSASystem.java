@@ -38,7 +38,7 @@ public class RSASystem {
 
         System.out.println("Encrypted message:");
         for (int i = 0; i < msgAlph.length; i++) {
-            int m = ((int) msgAlph[i]) - 64;
+            int m = ((int) msgAlph[i]);
             ciphers[i] = encrypt(m, keys[0], keys[1]);
             System.out.print(ciphers[i] + " ");
         }
@@ -46,7 +46,7 @@ public class RSASystem {
 
         System.out.println("Decrypted message:");
         for (int i = 0; i < msgAlph.length; i++) {
-            int m = decrypt(ciphers[i], keys[0], keys[2]) + 64;
+            int m = decrypt(ciphers[i], keys[0], keys[2]);
             char c = (char) m;
             decrypted[i] = c;
             System.out.print(decrypted[i] + " ");
